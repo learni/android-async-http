@@ -18,8 +18,9 @@
 
 package com.loopj.android.http;
 
-import java.io.IOException;
-
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -27,9 +28,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import android.os.Handler;
-import android.os.Message;
-import android.os.Looper;
+import java.io.IOException;
 
 /**
  * Used to intercept and handle the responses from requests made using 
@@ -78,16 +77,21 @@ public class AsyncHttpResponseHandler {
      * Creates a new AsyncHttpResponseHandler
      */
     public AsyncHttpResponseHandler() {
-        // Set up a handler to post events back to the correct thread if possible
-        if(Looper.myLooper() != null) {
-            handler = new Handler(){
-                public void handleMessage(Message msg){
-                    AsyncHttpResponseHandler.this.handleMessage(msg);
-                }
-            };
-        }
+        this(true);
     }
 
+    public AsyncHttpResponseHandler(Boolean async){
+        if (async == true){
+            // Set up a handler to post events back to the correct thread if possible
+            if(Looper.myLooper() != null) {
+                handler = new Handler(){
+                    public void handleMessage(Message msg){
+                        AsyncHttpResponseHandler.this.handleMessage(msg);
+                    }
+                };
+            }
+        }
+    }
 
     //
     // Callbacks to be overridden, typically anonymously

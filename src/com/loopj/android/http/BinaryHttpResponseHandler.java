@@ -57,6 +57,7 @@ import android.os.Looper;
  * </pre>
  */
 public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
+
     // Allow images by default
     private static String[] mAllowedContentTypes = new String[] {
         "image/jpeg",
@@ -70,12 +71,17 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         super();
     }
 
+    public BinaryHttpResponseHandler(boolean async) {
+        super(async);
+    }
+
+
     /**
      * Creates a new BinaryHttpResponseHandler, and overrides the default allowed
      * content types with passed String array (hopefully) of content types.
      */
-    public BinaryHttpResponseHandler(String[] allowedContentTypes) {
-        this();
+    public BinaryHttpResponseHandler(boolean async, String[] allowedContentTypes) {
+        this(async);
         mAllowedContentTypes = allowedContentTypes;
     }
 
