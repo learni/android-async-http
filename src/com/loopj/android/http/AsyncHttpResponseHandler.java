@@ -21,6 +21,7 @@ package com.loopj.android.http;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -29,6 +30,8 @@ import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Used to intercept and handle the responses from requests made using 
@@ -168,8 +171,6 @@ public class AsyncHttpResponseHandler {
         onFailure(e, responseBody);
     }
 
-
-
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
         switch(msg.what) {
@@ -209,9 +210,8 @@ public class AsyncHttpResponseHandler {
         return msg;
     }
 
-
     // Interface to AsyncHttpRequest
-    void sendResponseMessage(HttpResponse response) {
+    protected void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
         String responseBody = null;
         try {
