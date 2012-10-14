@@ -71,7 +71,7 @@ public class WithHeadersAsyncHttpResponseHandler extends AsyncHttpResponseHandle
     @Override
     protected void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
-        Header[] headers;
+        Header[] headers = null;
         String responseBody = null;
 
         try {
