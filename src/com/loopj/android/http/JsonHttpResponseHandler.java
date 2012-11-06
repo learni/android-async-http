@@ -27,11 +27,11 @@ import org.json.JSONTokener;
  * Used to intercept and handle the responses from requests made using
  * {@link AsyncHttpClient}, with automatic parsing into a {@link JSONObject}
  * or {@link JSONArray}.
- * <p>
+ * <p/>
  * This class is designed to be passed to get, post, put and delete requests
  * with the {@link #onSuccess(JSONObject)} or {@link #onSuccess(JSONArray)}
  * methods anonymously overridden.
- * <p>
+ * <p/>
  * Additionally, you can override the other event methods from the
  * parent class.
  */
@@ -52,18 +52,22 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      * Fired when a request returns successfully and contains a json object
      * at the base of the response string. Override to handle in your
      * own code.
+     *
      * @param response the parsed json object found in the server response (if any)
      */
-    public void onSuccess(JSONObject response) {}
+    public void onSuccess(JSONObject response) {
+    }
 
 
     /**
      * Fired when a request returns successfully and contains a json array
      * at the base of the response string. Override to handle in your
      * own code.
+     *
      * @param response the parsed json array found in the server response (if any)
      */
-    public void onSuccess(JSONArray response) {}
+    public void onSuccess(JSONArray response) {
+    }
 
 
     // Utility methods
@@ -71,17 +75,21 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     protected void handleSuccessMessage(String responseBody) {
         super.handleSuccessMessage(responseBody);
 
-        try {
-            Object jsonResponse = parseResponse(responseBody);
-            if(jsonResponse instanceof JSONObject) {
-                onSuccess((JSONObject)jsonResponse);
-            } else if(jsonResponse instanceof JSONArray) {
-                onSuccess((JSONArray)jsonResponse);
-            } else {
-                throw new JSONException("Unexpected type " + jsonResponse.getClass().getName());
+        if (responseBody != null) {
+            try {
+                Object jsonResponse = parseResponse(responseBody);
+                if (jsonResponse instanceof JSONObject) {
+                    onSuccess((JSONObject) jsonResponse);
+                } else if (jsonResponse instanceof JSONArray) {
+                    onSuccess((JSONArray) jsonResponse);
+                } else {
+                    throw new JSONException("Unexpected type " + jsonResponse.getClass().getName());
+                }
+            } catch (JSONException e) {
+                onFailure(e, responseBody);
             }
-        } catch(JSONException e) {
-            onFailure(e, responseBody);
+        } else {
+            onFailure(new NullPointerException("response is null"), "");
         }
     }
 
@@ -92,22 +100,24 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     /**
      * Handle cases where a failure is returned as JSON
      */
-    public void onFailure(Throwable e, JSONObject errorResponse) {}
-    public void onFailure(Throwable e, JSONArray errorResponse) {}
+    public void onFailure(Throwable e, JSONObject errorResponse) {
+    }
+
+    public void onFailure(Throwable e, JSONArray errorResponse) {
+    }
 
     @Override
     protected void handleFailureMessage(Throwable e, String responseBody) {
         if (responseBody != null) try {
             Object jsonResponse = parseResponse(responseBody);
-            if(jsonResponse instanceof JSONObject) {
-                onFailure(e, (JSONObject)jsonResponse);
-            } else if(jsonResponse instanceof JSONArray) {
-                onFailure(e, (JSONArray)jsonResponse);
-            }else{
-                onFailure(e,responseBody);
+            if (jsonResponse instanceof JSONObject) {
+                onFailure(e, (JSONObject) jsonResponse);
+            } else if (jsonResponse instanceof JSONArray) {
+                onFailure(e, (JSONArray) jsonResponse);
+            } else {
+                onFailure(e, responseBody);
             }
-        }
-        catch(JSONException ex) {
+        } catch (JSONException ex) {
             onFailure(e, responseBody);
         }
         else {

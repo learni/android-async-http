@@ -19,8 +19,9 @@ public class WithHeadersJsonHttpResponseHandler extends WithHeadersAsyncHttpResp
      * Fired when a request returns successfully and contains a json object
      * at the base of the response string. Override to handle in your
      * own code.
+     *
      * @param response the parsed json object found in the server response (if any)
-     * @param headers the response headers of the HTTP response from the server
+     * @param headers  the response headers of the HTTP response from the server
      */
     public void onSuccess(JSONObject response, Header[] headers) {
     }
@@ -29,26 +30,29 @@ public class WithHeadersJsonHttpResponseHandler extends WithHeadersAsyncHttpResp
      * Fired when a request returns successfully and contains a json array
      * at the base of the response string. Override to handle in your
      * own code.
+     *
      * @param response the parsed json array found in the server response (if any)
-     * @param headers the response headers of the HTTP response from the server
+     * @param headers  the response headers of the HTTP response from the server
      */
     public void onSuccess(JSONArray response, Header[] headers) {
     }
 
     /**
      * Fired when a request results in an error that is returned as a json object.
-     * @param e the underlying cause of the failure
+     *
+     * @param e             the underlying cause of the failure
      * @param errorResponse the response body, if any, parsed as a json object.
-     * @param headers the response headers of the HTTP response from the server
+     * @param headers       the response headers of the HTTP response from the server
      */
     public void onFailure(Throwable e, JSONObject errorResponse, Header[] headers) {
     }
 
     /**
      * Fired when a request results in an error that is returned as a json array.
-     * @param e the underlying cause of the failure
+     *
+     * @param e             the underlying cause of the failure
      * @param errorResponse the response body, if any, parsed as a json array.
-     * @param headers the response headers of the HTTP response from the server
+     * @param headers       the response headers of the HTTP response from the server
      */
     public void onFailure(Throwable e, JSONArray errorResponse, Header[] headers) {
     }
@@ -57,17 +61,22 @@ public class WithHeadersJsonHttpResponseHandler extends WithHeadersAsyncHttpResp
     protected void handleSuccessWithHeadersMessage(String responseBody, Header[] headers) {
         super.handleSuccessMessage(responseBody);
 
-        try {
-            Object jsonResponse = parseResponse(responseBody);
-            if (jsonResponse instanceof JSONObject) {
-                onSuccess((JSONObject) jsonResponse, headers);
-            } else if (jsonResponse instanceof JSONArray) {
-                onSuccess((JSONArray) jsonResponse, headers);
-            } else {
-                throw new JSONException("Unexpected type " + jsonResponse.getClass().getName());
+        if (responseBody != null) {
+            try {
+                Object jsonResponse = parseResponse(responseBody);
+
+                if (jsonResponse instanceof JSONObject) {
+                    onSuccess((JSONObject) jsonResponse, headers);
+                } else if (jsonResponse instanceof JSONArray) {
+                    onSuccess((JSONArray) jsonResponse, headers);
+                } else {
+                    throw new JSONException("Unexpected type " + jsonResponse.getClass().getName());
+                }
+            } catch (JSONException e) {
+                onFailure(e, responseBody, headers);
             }
-        } catch (JSONException e) {
-            onFailure(e, responseBody, headers);
+        } else {
+            onFailure(new NullPointerException("response is null"), "");
         }
     }
 
