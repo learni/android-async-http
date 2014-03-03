@@ -14,6 +14,12 @@ import org.json.JSONTokener;
  * To change this template use File | Settings | File Templates.
  */
 public class WithHeadersJsonHttpResponseHandler extends WithHeadersAsyncHttpResponseHandler {
+    public WithHeadersJsonHttpResponseHandler(boolean async) {
+        super(async);
+    }
+
+    public WithHeadersJsonHttpResponseHandler() {
+    }
 
     /**
      * Fired when a request returns successfully and contains a json object
