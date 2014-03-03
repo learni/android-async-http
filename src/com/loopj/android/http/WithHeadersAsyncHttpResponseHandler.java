@@ -10,7 +10,6 @@ import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.util.logging.Handler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +19,12 @@ import java.util.logging.Handler;
  * To change this template use File | Settings | File Templates.
  */
 public class WithHeadersAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
+    public WithHeadersAsyncHttpResponseHandler(Boolean async) {
+        super(async);
+    }
+
+    public WithHeadersAsyncHttpResponseHandler() {
+    }
 
     protected static final int SUCCESS_WITH_HEADERS_MESSAGE = 4;
     protected static final int FAILURE_WITH_HEADERS_MESSAGE = 5;
